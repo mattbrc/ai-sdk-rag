@@ -3,7 +3,9 @@
 import { useChat } from "ai/react";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    maxToolRoundtrips: 2,
+  });
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       <h1 className="text-2xl font-bold mb-4 text-center">
@@ -23,7 +25,15 @@ export default function Chat() {
             <div className="font-bold">
               {m.role === "user" ? "You" : "Coach"}
             </div>
-            <p className="whitespace-pre-wrap">{m.content}</p>
+            <p>
+              {m.content.length > 0 ? (
+                m.content
+              ) : (
+                <span className="italic font-light">
+                  {"calling tool: " + m?.toolInvocations?.[0].toolName}
+                </span>
+              )}
+            </p>
           </div>
         ))}
       </div>
